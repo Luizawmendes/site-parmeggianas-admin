@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Catch-all deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner() {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner';
+    }
+
+    function isAttendant() {
+       return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner' || 
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'attendant');
+    }
+
+    function isCook() {
+       return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner' || 
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'cook');
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /orders/{orderId} {
+      allow read: if isSignedIn();
+      allow create: if isAttendant();
+      allow update: if isCook() || isAttendant();
+      allow delete: if isOwner();
+    }
+
+    match /motoboys/{botId} {
+      allow read: if isSignedIn();
+      allow write: if isAttendant();
+    }
+
+    match /menuItems/{itemId} {
+      allow read: if isSignedIn();
+      allow write: if isOwner();
+    }
+
+    match /config/{configId} {
+      allow read: if isSignedIn();
+      allow write: if isOwner();
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if isOwner();
+      allow create: if isSignedIn();
+    }
+    
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}

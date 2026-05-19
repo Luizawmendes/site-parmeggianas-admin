@@ -1,0 +1,6 @@
+{
+  "name": "Parmeggianas e Panquecas Admin",
+  "description": "Sistema completo de gestão para marmitaria com IA, controle de cozinha, entregas e dashboard financeiro.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

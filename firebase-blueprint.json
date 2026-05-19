@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Order": {
+      "title": "Order",
+      "description": "Represents a customer order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "source": { "type": "string", "enum": ["WhatsApp", "Instagram", "Facebook"] },
+        "status": { "type": "string", "enum": ["Recebido", "Em Preparo", "Pronto", "Saiu para Entrega", "Entregue"] },
+        "items": { "type": "array", "items": { "type": "object" } },
+        "total": { "type": "number" },
+        "observations": { "type": "string" },
+        "deliveryAddress": { "type": "string" },
+        "motoboyId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "timeStarted": { "type": "string", "format": "date-time" },
+        "timeFinished": { "type": "string", "format": "date-time" },
+        "rawMessage": { "type": "string" }
+      },
+      "required": ["customerName", "status", "items", "total", "createdAt"]
+    },
+    "Motoboy": {
+      "title": "Motoboy",
+      "description": "Delivery personnel",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "pixKey": { "type": "string" },
+        "active": { "type": "boolean" },
+        "dailyTrips": { "type": "number" },
+        "dailyEarnings": { "type": "number" }
+      },
+      "required": ["name", "phone", "pixKey"]
+    },
+    "MenuItem": {
+      "title": "MenuItem",
+      "description": "Menu product",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "category": { "type": "string" },
+        "available": { "type": "boolean" }
+      },
+      "required": ["name", "price", "category"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "System action log",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "action": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "orders": { "schema": "Order", "description": "Collection of orders" },
+    "motoboys": { "schema": "Motoboy", "description": "Collection of delivery personnel" },
+    "menuItems": { "schema": "MenuItem", "description": "Collection of menu items" },
+    "auditLogs": { "schema": "AuditLog", "description": "Collection of system logs" }
+  }
+}
